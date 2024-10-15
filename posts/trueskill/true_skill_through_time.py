@@ -103,7 +103,10 @@ class TrueSkillThroughTimeApplied:
         initial_params = [.02, 5.0, 1]
 
         # Define the bounds for both gamma and sigma (in this case, between 0 and 10 for each)
-        bounds = [(0.00001, 0.1), (0.0001, 8), (0.0001, 8)]
+        #bounds = [(0.00001, 0.1), (0.0001, 8), (0.0001, 8)]
+
+        # set a larger lower bound for each param to ensure numerical stability(otherwise it won't converge)
+        bounds = [(0.001, 0.1), (0.01, 8), (0.01, 8)]
 
         # Perform the optimization with bounds
         result = minimize(self.negative_log_evidence, initial_params, bounds=bounds)
