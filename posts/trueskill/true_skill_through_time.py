@@ -191,8 +191,8 @@ class TrueSkillThroughTimeApplied:
                     mu_diff = normal_1.mu - normal_2.mu
                     sigma2_diff = normal_1.sigma ** 2 + normal_2.sigma ** 2 + 2 * (self.beta_optimal ** 2)
                     #c1_win_prob, _ = quad(normal_pdf, 0, np.inf, args=(mu_diff, sigma2_diff ** .5))
-                    #use norm.cdf to speed up the prob calculation
-                    c1_win_prob = norm.cdf(0, mu_diff, sigma2_diff ** .5)
+                    #use norm.cdf to speed up the prob calculation, P(X > 0) = 1 - P(X ≤ 0)
+                    c1_win_prob = 1 - norm.cdf(0, mu_diff, sigma2_diff ** .5)
 
                     df.append([c1, c2, c1_win, c1_win_prob])
 
