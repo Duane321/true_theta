@@ -3,7 +3,8 @@ import numpy as np
 import trueskillthroughtime as tst
 import altair as alt
 from scipy.optimize import minimize
-from scipy.integrate import quad
+#from scipy.integrate import quad
+from scipy.stats import norm
 
 # Define the normal distribution PDF
 def normal_pdf(x, mu, sigma):
@@ -189,7 +190,9 @@ class TrueSkillThroughTimeApplied:
                     normal_1, normal_2 = curves_map[c1][t_int], curves_map[c2][t_int]
                     mu_diff = normal_1.mu - normal_2.mu
                     sigma2_diff = normal_1.sigma ** 2 + normal_2.sigma ** 2 + 2 * (self.beta_optimal ** 2)
-                    c1_win_prob, _ = quad(normal_pdf, 0, np.inf, args=(mu_diff, sigma2_diff ** .5))
+                    #c1_win_prob, _ = quad(normal_pdf, 0, np.inf, args=(mu_diff, sigma2_diff ** .5))
+                    #use norm.cdf to speed up the prob calculation
+                    c1_win_prob = norm.cdf(0, mu_diff, sigma2_diff ** .5)
 
                     df.append([c1, c2, c1_win, c1_win_prob])
 
