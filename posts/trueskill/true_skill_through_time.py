@@ -178,6 +178,7 @@ class TrueSkillThroughTimeApplied:
         df = []
         for i, row in self.games.iterrows():
             winner, loser, t_int = row['winner'], row['loser'], row['time_0_to_999_int']
+            # avoid overfitting - randomly assigns the winner to c1 and the loser to c2
             if np.random.uniform() < .5:
                 c1_win = 1
                 c1, c2 = winner, loser
@@ -225,8 +226,65 @@ class TrueSkillThroughTimeApplied:
             y='y'
         )
 
-        return (straight_line + line_plot + point_plot).properties(width=width, height=height, title='Calibration Plot')
+        return (straight_line + line_plot + point_plot).properties(width=width, height=height, title='Calibration Plot In-Sample')
 
 
+    def plot_calibration_oos(self, oos_data, width: int = 400, height: int = 400):
+        """
+        plot calibration for out-of-sample data,
+        for each player in the oos data, take the player's last available mu and sigma then compute win_prob
+        """
+        #{'player_name': [(166, N(mu=2.302, sigma=1.017)), (196, N(mu=2.155, sigma=0.877))]} as in the skill_curves
+        last_curves_map = {k: v[-1][1] for k, v in self.skill_curves.items()}
 
+        df = []
+        for _, row in oos_data.iterrows():
+            winner, loser = row['winner'], row['loser']
+            # avoid overfitting - randomly assigns the winner to c1 and the loser to c2
+            if np.random.uniform() < .5:
+                c1_win = 1
+                c1, c2 = winner, loser
+            else:
+                c1_win = 0
+                c1, c2 = loser, winner
+
+            if c1 in last_curves_map and c2 in last_curves_map:
+                normal_1, normal_2 = last_curves_map[c1], last_curves_map[c2]
+                mu_diff = normal_1.mu - normal_2.mu
+                sigma2_diff = normal_1.sigma ** 2 + normal_2.sigma ** 2 + 2 * (self.beta_optimal ** 2)
+                #use norm.cdf to speed up the prob calculation, P(X > 0) = 1 - P(X ≤ 0)
+                c1_win_prob = 1 - norm.cdf(0, mu_diff, sigma2_diff ** .5)
+
+                df.append([c1, c2, c1_win, c1_win_prob])
+
+        df = pd.DataFrame(df, columns=['competitor_1', 'competitor_2', 'win_actual', 'win_prob']).dropna()
+
+        df['win_prob_bucket'] = pd.qcut(df['win_prob'], q=10, duplicates='drop')
+
+        bucket_means = df.groupby('win_prob_bucket').agg(
+            avg_outcome=('win_actual', 'mean'),
+            win_prob_midpoint=('win_prob', 'mean')
+        )
+
+        line_plot = alt.Chart(bucket_means).mark_line(strokeWidth=4).encode(
+            x=alt.X('win_prob_midpoint', title='Predicted Win Probability'),
+            y=alt.Y('avg_outcome', title='Average Outcome'),
+        )
+        point_plot = alt.Chart(bucket_means).mark_point(fill='white', strokeWidth=4, size=200, opacity=1).encode(
+            x=alt.X('win_prob_midpoint'),
+            y=alt.Y('avg_outcome'),
+        )
+
+        straight_line_data = pd.DataFrame({
+            'x': [0, 1],
+            'y': [0, 1]
+        })
+
+        # Create the line chart with dotted line style
+        straight_line = alt.Chart(straight_line_data).mark_line(strokeDash=[12, 12], color='black').encode(
+            x='x',
+            y='y'
+        )
+
+        return (straight_line + line_plot + point_plot).properties(width=width, height=height, title='Calibration Plot Out-Of-Sample')
 
