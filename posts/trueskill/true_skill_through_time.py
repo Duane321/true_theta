@@ -248,6 +248,7 @@ class TrueSkillThroughTimeApplied:
                 c1_win = 0
                 c1, c2 = loser, winner
 
+            # later TODO - for those that is not on the last_curves_map, we may assume N(0, 1)
             if c1 in last_curves_map and c2 in last_curves_map:
                 normal_1, normal_2 = last_curves_map[c1], last_curves_map[c2]
                 mu_diff = normal_1.mu - normal_2.mu
