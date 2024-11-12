@@ -26,7 +26,7 @@ class Warcraft3Spliter(DataSpliter):
         end_idx - starting index of test set, it is counted in reverse order(the end_idx is exclusive)
         """
         #e.g. 'data/warcraft3.csv'
-        games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[-start_idx:-end_idx]
+        games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[start_idx:end_idx]
         games_raw['timestamp'] = pd.to_datetime(games_raw['date'])
 
         games_train = prepare_warcraft3_data(games_raw)
@@ -40,9 +40,9 @@ class Warcraft3Spliter(DataSpliter):
         """
         #e.g. 'data/warcraft3.csv'
         if not end_idx:
-            games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[-start_idx:]
+            games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[start_idx:]
         else:
-            games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[-start_idx:-end_idx]
+            games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[start_idx:end_idx]
         games_raw['timestamp'] = pd.to_datetime(games_raw['date'])
 
         games_test = prepare_warcraft3_data(games_raw)
