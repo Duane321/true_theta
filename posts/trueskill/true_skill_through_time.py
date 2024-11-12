@@ -141,7 +141,8 @@ class TrueSkillThroughTimeApplied:
         self.skill_curves = {p: learning_curves[self.competitor_name_map[p]] for p in self.competitors}
         return self.skill_curves
 
-    def plot_player_skills(self, players:list[str], width:int=1000, height:int=800, burnin:int=20):
+    def plot_player_skills(self, players:list[str], players_id_mapping:dict
+                                        , width:int=1000, height:int=800, burnin:int=20):
 
         assert self.skill_curves is not None, "Skill curves not set. Run .set_skill_curves() first."
 
@@ -153,6 +154,7 @@ class TrueSkillThroughTimeApplied:
             data_ = data[burnin:]
             if player not in players:
                 continue
+            player = players_id_mapping[player] if players_id_mapping else player
             df = pd.DataFrame({
                 'date': [t_ints_to_date[t] for t, _ in data_],
                 'mu': [d.mu for _, d in data_],
@@ -169,7 +171,7 @@ class TrueSkillThroughTimeApplied:
         line = alt.Chart(df_combined).mark_line(strokeWidth=4).encode(
             x=alt.X('date:T', axis=alt.Axis(format="%Y %B")),
             y=alt.Y('mu', scale=alt.Scale(zero=False), title='Skill'),
-            color=alt.Color('player', sort=players)
+            color=alt.Color('player', scale=alt.Scale(scheme='tableau10'), sort=players)#, scale=alt.Scale(scheme='plasma')
         )
         confidence_interval = alt.Chart(df_combined).mark_area(opacity=0.4).encode(
             x='date',
