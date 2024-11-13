@@ -135,6 +135,34 @@ def prepare_tennis_data(games_filtered, target_players_lst):
 
     return players_ge_40_matches_df
 
+def prepare_boxing_data(games_filtered, target_players_lst):
+    """
+    Prepare raw data to be split by train/test set used in trueskill through time algo
+    It should be called by BoxingSpliter.train_test_split from train_test_split_game.py
+    games: filtered input data from tennis game history with a target players list
+    """
+    winners = games_filtered[['winner', 'timestamp', 'game_index']].copy()
+    winners['result'] = 1
+    winners = winners.rename(columns={'winner': 'player'})
+
+    # Create a dataframe for losers
+    losers = games_filtered[['loser', 'timestamp', 'game_index']].copy()
+    losers['result'] = 0
+    losers = losers.rename(columns={'loser': 'player'})
+
+    # Concatenate winners and losers dataframes
+    result_df = pd.concat([winners, losers], ignore_index=True)
+
+    # Sort the resulting dataframe by timestamp
+    result_df = result_df.sort_values(['player', 'timestamp']).reset_index(drop=True)
+
+    players_ge_40_matches_df = result_df[result_df.player.isin(target_players_lst)].reset_index().iloc[:, 1:]
+
+    return players_ge_40_matches_df
+
+
+
+
 def train_test_split_by_players(players_lst, filtered_matches_df, test_size=0.2):
     """
     do a train_test_split by a list of players

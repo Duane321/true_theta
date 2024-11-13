@@ -98,7 +98,7 @@ class BoxingSpliter(DataSpliter):
         games = pd.read_parquet(self.input_filename)
 
         games_filtered = games[games.winner.isin(players_lst) | games.loser.isin(players_lst)]
-        players_filtered_matches_df = prepare_tennis_data(games_filtered, players_lst)
+        players_filtered_matches_df = prepare_boxing_data(games_filtered, players_lst)
 
         train_df, test_df = train_test_split_by_players(players_filtered_matches_df['player'].unique(), players_filtered_matches_df, test_size)
 
