@@ -66,9 +66,9 @@ class TennisProcessor(DataProcessor):
 
 class BoxingProcessor(DataProcessor):
     # TODO - do we need to add a method on how to get wiki_urls.txt for boxing and UFC?
-    def pull_data(self, wiki_urls_filename):
+    def pull_data(self):
         # data/boxer_wiki_urls.txt contains the wikipedia URLs of a large list of boxers
-        with open(wiki_urls_filename, 'r') as file:
+        with open(self.input_filename, 'r') as file:
             urls = file.readlines()
         urls = [url.strip() for url in urls]
 
@@ -159,9 +159,9 @@ class BoxingProcessor(DataProcessor):
 
 
 class UFCProcessor(DataProcessor):
-    def pull_data(self, wiki_urls_filename):
+    def pull_data(self):
         # data/ufc_wiki_urls_v2.txt contains the wikipedia URLs of a large list of ufc fighters
-        with open(wiki_urls_filename, 'r') as file:
+        with open(self.input_filename, 'r') as file:
             urls = file.readlines()
         urls = [url.strip() for url in urls]
 

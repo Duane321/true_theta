@@ -141,7 +141,7 @@ class TrueSkillThroughTimeApplied:
         self.skill_curves = {p: learning_curves[self.competitor_name_map[p]] for p in self.competitors}
         return self.skill_curves
 
-    def plot_player_skills(self, players:list[str], players_id_mapping:dict
+    def plot_player_skills(self, players:list[str], players_id_mapping=None
                                         , width:int=1000, height:int=800, burnin:int=20):
 
         assert self.skill_curves is not None, "Skill curves not set. Run .set_skill_curves() first."
