@@ -21,7 +21,7 @@ class Warcraft3Spliter(DataSpliter):
     """
     assume the warcraft3 data is sorted in chronical order
     """
-    def prepare_train_set(self, start_idx, end_idx, input_data=None) -> pd.DataFrame:
+    def prepare_train_set(self, start_idx: int, end_idx: int, input_data=None) -> pd.DataFrame:
         """
         start_idx - starting index of train set, it is counted in reverse order
         end_idx - starting index of test set, it is counted in reverse order(the end_idx is exclusive)
@@ -34,7 +34,7 @@ class Warcraft3Spliter(DataSpliter):
 
         return games_train
 
-    def prepare_test_set(self, start_idx, end_idx=None, input_data=None) -> pd.DataFrame:
+    def prepare_test_set(self, start_idx: int, end_idx=None, input_data=None) -> pd.DataFrame:
         """
         start_idx - starting index of train set, it is counted in reverse order
         end_idx - starting index of test set, it is counted in reverse order(the end_idx is exclusive)
@@ -56,7 +56,7 @@ class TennisSpliter(DataSpliter):
         super().__init__(input_filename)
         self.target_players_filename = target_players_filename
         
-    def train_test_split(self, test_size=0.2):
+    def train_test_split(self, test_size=0.2) -> tuple[pd.DataFrame, pd.DataFrame]:
         #e.g. "data/tennis_players_ge_40_matches_lst.json"
         with open(self.target_players_filename, "r") as f:
             players_lst = json.load(f)

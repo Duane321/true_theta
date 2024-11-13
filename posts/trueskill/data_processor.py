@@ -22,7 +22,7 @@ class Warcraft3Processor(DataProcessor):
     def pull_data(self):
         pass
 
-    def process_games_data(self):
+    def process_games_data(self) -> pd.DataFrame:
         #e.g. 'data\warcraft3.csv'
         games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[-50000:]
         games_raw['timestamp'] = pd.to_datetime(games_raw['date'])
@@ -54,7 +54,7 @@ class TennisProcessor(DataProcessor):
     def pull_data(self):
         pass
 
-    def process_games_data(self):
+    def process_games_data(self) -> pd.DataFrame:
         #e.g. "data/tennis_history.csv"
         tennis_data_raw = pd.read_csv(self.input_filename, low_memory=False)
         tennis_data_df = tennis_data_raw[tennis_data_raw.double=='f'][['match_id', 'w1_id', 'l1_id', 'time_end']].dropna()
@@ -66,7 +66,7 @@ class TennisProcessor(DataProcessor):
 
 class BoxingProcessor(DataProcessor):
     # TODO - do we need to add a method on how to get wiki_urls.txt for boxing and UFC?
-    def pull_data(self):
+    def pull_data(self) -> pd.DataFrame:
         # data/boxer_wiki_urls.txt contains the wikipedia URLs of a large list of boxers
         with open(self.input_filename, 'r') as file:
             urls = file.readlines()
@@ -106,7 +106,7 @@ class BoxingProcessor(DataProcessor):
 
         return boxing_matches_df
 
-    def process_games_data(self, boxing_matches_df):
+    def process_games_data(self, boxing_matches_df: pd.DataFrame) -> pd.DataFrame:
         
         boxing_matches_df = boxing_matches_df[boxing_matches_df['Result'].isin(['Loss', 'Lost', 'L by TKO', 'L by KO'
                                 , 'Lose', 'LOST', 'Wim', 'Win', 'Won', 'W by KO', 'W by TKO', 'W by SD', 'W by PTS'])]
@@ -159,7 +159,7 @@ class BoxingProcessor(DataProcessor):
 
 
 class UFCProcessor(DataProcessor):
-    def pull_data(self):
+    def pull_data(self) -> pd.DataFrame:
         # data/ufc_wiki_urls_v2.txt contains the wikipedia URLs of a large list of ufc fighters
         with open(self.input_filename, 'r') as file:
             urls = file.readlines()
@@ -197,7 +197,7 @@ class UFCProcessor(DataProcessor):
 
 
 
-    def process_games_data(self, ufc_matches_df):
+    def process_games_data(self, ufc_matches_df: pd.DataFrame) -> pd.DataFrame:
         
         ufc_matches_df = ufc_matches_df[ufc_matches_df['Result'].isin(['Win', 'Loss'])]
         mapper = {'Loss':0, 

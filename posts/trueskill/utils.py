@@ -41,7 +41,7 @@ def extract_boxing_record(url):
     print('No suitable table found with at least 4 columns.')
     return None
 
-def parse_dates(date_list):
+def parse_dates(date_list: list) -> pd.Series:
     """
     Parse a list of dates and convert to datetime type
     date_list: a list of game dates
@@ -51,7 +51,7 @@ def parse_dates(date_list):
     return parsed_dates
 
 
-def extract_ufc_record(url):
+def extract_ufc_record(url: str):
     """
     Given a ufc's Wikipedia URL, this will extract the table called "Mixed martial arts record" and do some cleanup.
     url: a wiki url for a fighter
@@ -84,7 +84,7 @@ def extract_ufc_record(url):
     print('No suitable table found with at least 4 columns.')
     return None
 
-def prepare_warcraft3_data(raw_data):
+def prepare_warcraft3_data(raw_data: pd.DataFrame) -> pd.DataFrame:
     """
     Prepare raw data to be split by train/test set used in trueskill through time algo
     raw_data: raw input data from warcraft3 game history
@@ -110,7 +110,7 @@ def prepare_warcraft3_data(raw_data):
 
     return games
 
-def prepare_tennis_data(games_filtered, target_players_lst):
+def prepare_tennis_data(games_filtered: pd.DataFrame, target_players_lst: list) -> pd.DataFrame:
     """
     Prepare raw data to be split by train/test set used in trueskill through time algo
     It should be called by TennisSpliter.train_test_split from train_test_split_game.py
@@ -137,7 +137,7 @@ def prepare_tennis_data(games_filtered, target_players_lst):
 
     return players_ge_40_matches_df
 
-def prepare_boxing_data(games_filtered, target_players_lst):
+def prepare_boxing_data(games_filtered: pd.DataFrame, target_players_lst: list) -> pd.DataFrame:
     """
     Prepare raw data to be split by train/test set used in trueskill through time algo
     It should be called by BoxingSpliter.train_test_split from train_test_split_game.py
@@ -165,7 +165,7 @@ def prepare_boxing_data(games_filtered, target_players_lst):
 
 
 
-def train_test_split_by_players(players_lst, filtered_matches_df, test_size=0.2):
+def train_test_split_by_players(players_lst: list, filtered_matches_df: pd.DataFrame, test_size=0.2) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     do a train_test_split by a list of players
     for each player, use the previous (1-test_size) as the train set and the last test_size as the test set
@@ -193,11 +193,11 @@ def train_test_split_by_players(players_lst, filtered_matches_df, test_size=0.2)
 
     return train_df, test_df
 
-def assign_players(row):
+def assign_players(row: pd.Series) -> pd.Series:
     p1, p2 = sorted([row['winner'], row['loser']])
     return pd.Series([p1, p2], index=['player1', 'player2'])
 
-def calculate_auc(test_df, skill_curves, beta_optimal):
+def calculate_auc(test_df: pd.DataFrame, skill_curves: dict, beta_optimal: float) -> np.float:
     test_df['roc_label'] = test_df.apply(lambda row: row.winner < row.loser, axis=1).astype(int)
     test_df[['player1', 'player2']] = test_df.apply(assign_players, axis=1)
     last_curves_map = {k: v[-1][1] for k, v in skill_curves.items()}
