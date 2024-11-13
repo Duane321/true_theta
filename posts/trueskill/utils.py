@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 import json
 from tqdm import tqdm
+from scipy.stats import norm
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
 
 def extract_boxing_record(url):
     """
@@ -190,3 +192,28 @@ def train_test_split_by_players(players_lst, filtered_matches_df, test_size=0.2)
     test_df = pd.concat(test_data, ignore_index=True)
 
     return train_df, test_df
+
+def assign_players(row):
+    p1, p2 = sorted([row['winner'], row['loser']])
+    return pd.Series([p1, p2], index=['player1', 'player2'])
+
+def calculate_auc(test_df, skill_curves, beta_optimal):
+    test_df['roc_label'] = test_df.apply(lambda row: row.winner < row.loser, axis=1).astype(int)
+    test_df[['player1', 'player2']] = test_df.apply(assign_players, axis=1)
+    last_curves_map = {k: v[-1][1] for k, v in skill_curves.items()}
+    df = []
+    for _, row in test_df.iterrows():
+        c1, c2 = row['player1'], row['player2']
+        if c1 in last_curves_map and c2 in last_curves_map:
+            normal_1, normal_2 = last_curves_map[c1], last_curves_map[c2]
+            mu_diff = normal_1.mu - normal_2.mu
+            sigma2_diff = normal_1.sigma ** 2 + normal_2.sigma ** 2 + 2 * (beta_optimal ** 2)
+            #use norm.cdf to speed up the prob calculation, P(X > 0) = 1 - P(X ≤ 0)
+            c1_win_prob = 1 - norm.cdf(0, mu_diff, sigma2_diff ** .5)
+            df.append([c1, c2, c1_win_prob])
+    df = pd.DataFrame(df, columns=['player1', 'player2', 'player1_win_prob']).dropna()
+    merged_df = pd.merge(test_df, df, on=['player1', 'player2'])
+    roc_auc_score_val = roc_auc_score(merged_df.roc_label, merged_df.player1_win_prob)
+
+    return roc_auc_score_val
+
