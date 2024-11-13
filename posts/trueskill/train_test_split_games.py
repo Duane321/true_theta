@@ -8,13 +8,14 @@ class DataSpliter(ABC):
     def __init__(self, input_filename: str):
         self.input_filename = input_filename
 
-    @abstractmethod
     def prepare_train_set(self, input_data=None) -> pd.DataFrame:
-        pass
+        print("optional implementation for prepare_train_set")
 
-    @abstractmethod
     def prepare_test_set(self, input_data=None) -> pd.DataFrame:
-        pass
+        print("optional implementation for prepare_test_set")
+
+    def train_test_split(self, input_data=None) -> pd.DataFrame:
+        print("optional implementation for train_test_split")
 
 class Warcraft3Spliter(DataSpliter):
     """
@@ -57,7 +58,7 @@ class TennisSpliter(DataSpliter):
         
     def train_test_split(self, test_size=0.2):
         #e.g. "data/tennis_players_ge_40_matches_lst.json"
-        with open(self.target_players_filename, "w") as f:
+        with open(self.target_players_filename, "r") as f:
             players_lst = json.load(f)
         #e.g. "data/tennis_matches_refined_tstt.parquet"
         games = pd.read_parquet(self.input_filename)
@@ -91,7 +92,7 @@ class BoxingSpliter(DataSpliter):
         
     def train_test_split(self, test_size=0.2):
         #e.g. "data/players_ge_40_matches_lst.json"
-        with open(self.target_players_filename, "w") as f:
+        with open(self.target_players_filename, "r") as f:
             players_lst = json.load(f)
         #e.g. "data/boxing_matches_refined_tstt.parquet"
         games = pd.read_parquet(self.input_filename)
