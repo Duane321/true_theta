@@ -197,7 +197,7 @@ def assign_players(row: pd.Series) -> pd.Series:
     p1, p2 = sorted([row['winner'], row['loser']])
     return pd.Series([p1, p2], index=['player1', 'player2'])
 
-def calculate_auc(test_df: pd.DataFrame, skill_curves: dict, beta_optimal: float) -> np.float:
+def calculate_auc(test_df: pd.DataFrame, skill_curves: dict, beta_optimal: float) -> float:
     test_df['roc_label'] = test_df.apply(lambda row: row.winner < row.loser, axis=1).astype(int)
     test_df[['player1', 'player2']] = test_df.apply(assign_players, axis=1)
     last_curves_map = {k: v[-1][1] for k, v in skill_curves.items()}
