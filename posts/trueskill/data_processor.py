@@ -16,40 +16,6 @@ class DataProcessor(ABC):
     def process_games_data(self, input_data=None) -> pd.DataFrame:
         pass
 
-
-class Warcraft3Processor(DataProcessor):
-    # TODO - add on how to get data\warcraft3.csv
-    def pull_data(self):
-        pass
-
-    def process_games_data(self) -> pd.DataFrame:
-        #e.g. 'data\warcraft3.csv'
-        games_raw = pd.read_csv(self.input_filename).query('(competitor_1_score > -0.0001) & (competitor_2_score > -0.0001)').iloc[-50000:]
-        games_raw['timestamp'] = pd.to_datetime(games_raw['date'])
-
-        game_composition = []
-        times = []
-        np.random.seed(0)
-
-        for _, row in games_raw.iterrows():
-            c1, c2, c1s, c2s, t = row['competitor_1'], row['competitor_2'], row['competitor_1_score'], row['competitor_2_score'], row['timestamp']
-
-            assert c1s == int(c1s)
-            assert c2s == int(c2s)
-            
-            comp = [(c1, c2)] * int(c1s) + [(c2, c1)] * int(c2s)
-            comp = np.random.permutation(comp).tolist() # Game order matters and we don't actually know it, so we randomize over it.
-
-            for cp_g in comp:
-                game_composition.append(cp_g)
-                times.append(t)
-
-        games = pd.DataFrame(game_composition, columns=['winner', 'loser']).assign(timestamp = times)
-
-        return games
-
-
-
 class TennisProcessor(DataProcessor):
     def pull_data(self):
         pass

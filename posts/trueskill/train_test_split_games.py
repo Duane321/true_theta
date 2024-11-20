@@ -4,7 +4,7 @@ import json
 
 
 
-class DataSpliter(ABC):
+class DataSplitter(ABC):
     def __init__(self, input_filename: str):
         self.input_filename = input_filename
 
@@ -17,7 +17,7 @@ class DataSpliter(ABC):
     def train_test_split(self, input_data=None) -> pd.DataFrame:
         print("optional implementation for train_test_split")
 
-class Warcraft3Spliter(DataSpliter):
+class Warcraft3Splitter(DataSplitter):
     """
     assume the warcraft3 data is sorted in chronical order
     """
@@ -51,7 +51,7 @@ class Warcraft3Spliter(DataSpliter):
         return games_test
     
 
-class TennisSpliter(DataSpliter):
+class TennisSplitter(DataSplitter):
     def __init__(self, input_filename: str, target_players_filename: str):
         super().__init__(input_filename)
         self.target_players_filename = target_players_filename
@@ -85,7 +85,7 @@ class TennisSpliter(DataSpliter):
         return games_filtered_train_df, games_filtered_test_unique_df
     
 
-class BoxingSpliter(DataSpliter):
+class BoxingSplitter(DataSplitter):
     def __init__(self, input_filename: str, target_players_filename: str):
         super().__init__(input_filename)
         self.target_players_filename = target_players_filename
@@ -118,4 +118,4 @@ class BoxingSpliter(DataSpliter):
     
 #we don't do train_test_split for UFC data at the moment since it has only 7660 games
 #the calibration plot on the entire 7660 games dataset is very similar to the calibration plot of the entire 25651 boxing data
-#class UFCSpliter(DataSpliter)
+#class UFCSplitter(DataSplitter)
