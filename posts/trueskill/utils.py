@@ -113,7 +113,7 @@ def prepare_warcraft3_data(raw_data: pd.DataFrame) -> pd.DataFrame:
 def prepare_tennis_data(games_filtered: pd.DataFrame, target_players_lst: list) -> pd.DataFrame:
     """
     Prepare raw data to be split by train/test set used in trueskill through time algo
-    It should be called by TennisSpliter.train_test_split from train_test_split_game.py
+    It should be called by TennisSplitter.train_test_split from train_test_split_game.py
     games: filtered input data from tennis game history with a target players list
     """
 
@@ -140,7 +140,7 @@ def prepare_tennis_data(games_filtered: pd.DataFrame, target_players_lst: list) 
 def prepare_boxing_data(games_filtered: pd.DataFrame, target_players_lst: list) -> pd.DataFrame:
     """
     Prepare raw data to be split by train/test set used in trueskill through time algo
-    It should be called by BoxingSpliter.train_test_split from train_test_split_game.py
+    It should be called by BoxingSplitter.train_test_split from train_test_split_game.py
     games: filtered input data from tennis game history with a target players list
     """
     winners = games_filtered[['winner', 'timestamp', 'game_index']].copy()
