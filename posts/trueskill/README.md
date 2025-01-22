@@ -1,11 +1,11 @@
-# TrueSkill for the True Theta Blog (parts 1 and 2) and Mutual Information Video
+# TrueSkill for the True Theta Blog, Parts 1 and 2.
 
 This repository contains the code for the True Theta blog posts on TrueSkill and the Mutual Information video. Both are
 currently in progress and will be released soon.
 
 A description of the primary files. You may run each cell in the notebook one by one to replicate the results.
 
-- `true_skill_simulated.ipynb`: A notebook that creates the graphics for the Part 1 blog post on TrueSkill. It still needs to be cleaned up a bit.
+- `true_skill_simulated.ipynb`: A notebook that creates the graphics for the Part 1 blog post on TrueSkill. 
 - `trueskill_simulation.py`: A primary class used in the true_skill_simulated.ipynb notebook.
 - `utils.py`: This contains the utility functions, which are used in the application notebook for each game.
 - `train_test_split_games.py`: This contains the `DataSplitter` class, which is used to do train-test split in the application notebook for each game.
