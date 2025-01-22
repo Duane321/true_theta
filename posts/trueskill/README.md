@@ -20,15 +20,10 @@ A description of the primary files. You may run each cell in the notebook one by
 - `boxing/boxing_dev.ipynb`: This notebook applies [TrueSkillThroughTime](https://github.com/glandfried/TrueSkillThroughTime.py) to boxing.
   - It runs the entire pipeline to first preprocess the data/boxer_wiki_urls.txt to fetch game history from each famous player's Wiki page, do manual corrections and de-duplications in order to have a well-formed game dataset. Then it does a train-test split based on each player's career path and applies algo in the `true_skill_through_time.py` file. The results are validated via players' skill curves through time, calibration plots of train and test sets and the AUC.
 
-- `ufc/ufc_dev.ipynb`: This notebook applies [TrueSkillThroughTime](https://github.com/glandfried/TrueSkillThroughTime.py) to boxing.
-  - It runs the entire pipeline to first preprocess the data/ufc_wiki_urls_v2.txt to fetch game history from each famous player's Wiki page, do manual corrections and de-duplications in order to have a well-formed game dataset. Then it applies algo in the `true_skill_through_time.py` file. The results are validated via players' skill curves through time, calibration plots of train and test sets and the AUC.
-
 - `data`: This folder contains raw and formatted data for each game.
   - `boxer_wiki_urls.txt`: each line has a famous boxer's url
   - `boxing_matches_cleaned.parquet`: boxing match history in winner-loser-timestamp format after some clean-up
   - `players_ge_40_matches_lst_boxing.json`: a list of boxers who have played at least 40 games in the career
-  - `ufc_wiki_urls_v2.txt`: each line has a famous ufc fighter's url
-  - `ufc_matches_cleaned.parquet`: boxing match history in winner-loser-timestamp format after some clean-up
   - `warcraft3.csv`: raw game history of warcraft3
   - `players_ge_40_matches_lst_warcraft3.json`: a list of warcraft3 players who have played at least 40 games in the career
   - `tennis_history.csv`: raw game history of tennis
@@ -47,6 +42,5 @@ A description of the primary files. You may run each cell in the notebook one by
   - Tennis: 326,306 matches, 2502 players who have played at least 40 games in the career
   - Warcraft 3: 85,777 matches, 175 players who have played at least 40 games in the career
   - Boxing: 25,651 matches, 303 players who have played at least 40 games in the career
-  - UFC: 7,660 matches
 
-- `plots_updated_params`: plots of latest model. For each game, it contains skillcurve of major players, calibration of train and test set. Please note that since UFC has very few games available, we only do a calibration on the entire dataset without doing train-test split.
+- `plots_updated_params`: plots of latest model. For each game, it contains skillcurve of major players, calibration of train and test set. 
